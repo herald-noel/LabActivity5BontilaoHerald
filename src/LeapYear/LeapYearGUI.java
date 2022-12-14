@@ -14,8 +14,14 @@ public class LeapYearGUI extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int year = Integer.parseInt(tfYear.getText());
-                isLeapYear(year);
+                try {
+                    int year = Integer.parseInt(tfYear.getText());
+                    isLeapYear(year);
+                } catch (NumberFormatException a) {
+                    JOptionPane.showMessageDialog(panel1, "Invalid input. Try again.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    tfYear.setText("");
+                }
             }
         });
     }
