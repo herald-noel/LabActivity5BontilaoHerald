@@ -61,7 +61,6 @@ public class FoodOrderGUI extends JFrame {
         for (JCheckBox food : foods.keySet()) {
             if (food.isSelected()) {
                 total += foods.get(food);
-                food.setSelected(false); // Uncheck the checkbox
             }
         }
         return total;
@@ -71,7 +70,6 @@ public class FoodOrderGUI extends JFrame {
         Double numDiscount = null;
         for (JRadioButton discount : discounts.keySet()) {
             if (discount.isSelected()) {
-                rbNone.setSelected(true); // Set selection of rbNone to true
                 numDiscount = discounts.get(discount);
                 break;
             }
@@ -79,9 +77,25 @@ public class FoodOrderGUI extends JFrame {
         return numDiscount;
     }
     public void promptPrice() {
-        int total = sumOrder();
-        double discount = total * getDiscount();
-        double price = total - discount;
-        JOptionPane.showMessageDialog(pnlMain, String.format("The total price is Php %.2f", price));
+        try {
+            int total = sumOrder();
+            if (total == 0) {
+                throw new Exception();
+            }
+            double discount = total * getDiscount();
+            double price = total - discount;
+            JOptionPane.showMessageDialog(pnlMain, String.format("The total price is Php %.2f", price));
+        } catch (Exception e) {
+            rbNone.setSelected(true);
+            JOptionPane.showMessageDialog(pnlMain, "No orders selected. Please select at least one item from " +
+                            "the menu.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            rbNone.setSelected(true); // Set selection of rbNone to true
+            for (JCheckBox food : foods.keySet()) {
+                if (food.isSelected()) {
+                    food.setSelected(false); // Uncheck the checkbox
+                }
+            }
+        }
     }
 }
