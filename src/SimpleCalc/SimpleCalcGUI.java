@@ -16,12 +16,7 @@ public class SimpleCalcGUI extends JFrame {
         btnCompute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double a = toDouble(tfNumber1.getText());
-                double b = toDouble(tfNumber2.getText());
-                String op = (String) cbOperations.getSelectedItem();
-                assert op != null;
-                double answer = calc(a, b, op);
-                lblResult.setText(String.format("%.2f", answer));
+                setLblResult();
             }
         });
     }
@@ -35,7 +30,6 @@ public class SimpleCalcGUI extends JFrame {
         app.setLocationRelativeTo(null); // Centers the window upon running
         app.setVisible(true);
     }
-
     public double toDouble (String n) {
         return Double.parseDouble(n);
     }
@@ -57,5 +51,27 @@ public class SimpleCalcGUI extends JFrame {
                 break;
         }
         return answer;
+    }
+
+    public void setLblResult() {
+        try {
+            double a = toDouble(tfNumber1.getText());
+            double b = toDouble(tfNumber2.getText());
+            String op = (String) cbOperations.getSelectedItem();
+            assert op != null;
+            double answer = calc(a, b, op);
+            if (Double.isInfinite(answer) || Double.isNaN(answer)) {
+                throw new ArithmeticException();
+            }
+            // When dividing by a negative number
+            if (answer == -0) {
+                answer = 0;
+            }
+            lblResult.setText(String.format("%.2f", answer));
+        } catch (NumberFormatException f) {
+            JOptionPane.showMessageDialog(pnlMain, "Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ArithmeticException f) {
+            JOptionPane.showMessageDialog(pnlMain, "Cannot divide by zero", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
